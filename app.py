@@ -130,17 +130,38 @@ else:
 st.markdown("### Survey Questions")
 st.markdown("**Please rate the following statements:**")
 
+# Likert scale labels
+likert_labels = {
+    1: "Strongly Disagree",
+    2: "Disagree",
+    3: "Neutral",
+    4: "Agree",
+    5: "Strongly Agree"
+}
+
 responses = {}
 for i, question in enumerate(questions, 1):
     st.markdown(f"**{i}. {question}**")
-    response = st.radio(
-        f"Select your response for question {i}:",
-        options=[1, 2, 3, 4, 5],
-        format_func=lambda x: f"{x} - {['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'][x-1]}",
-        key=f"q{i}",
-        horizontal=True,
-        label_visibility="collapsed"
-    )
+    
+    # Create columns for slider with labels
+    col1, col2, col3 = st.columns([1, 6, 1])
+    with col1:
+        st.markdown("<small>Strongly<br>Disagree</small>", unsafe_allow_html=True)
+    with col2:
+        response = st.slider(
+            f"Select your response for question {i}:",
+            min_value=1,
+            max_value=5,
+            value=3,
+            step=1,
+            key=f"q{i}",
+            label_visibility="collapsed"
+        )
+    with col3:
+        st.markdown("<small>Strongly<br>Agree</small>", unsafe_allow_html=True)
+    
+    # Display selected value with label
+    st.markdown(f"*Selected: {response} - {likert_labels[response]}*")
     responses[f"Q{i}"] = response
     st.markdown("---")
 
